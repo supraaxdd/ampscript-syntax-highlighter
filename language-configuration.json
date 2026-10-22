@@ -1,0 +1,67 @@
+
+{
+  "wordPattern": {
+    "pattern": "@?[A-Za-z_][A-Za-z0-9_]*|-?\\d+(?:\\.\\d+)?",
+    "flags": "g"
+  },
+  "comments": {
+    "blockComment": ["/*", "*/"]
+  },
+  "brackets": [
+    ["{", "}"],
+    ["[", "]"],
+    ["(", ")"]
+  ],
+  "autoClosingPairs": [
+    { "open": "(", "close": ")" },
+    { "open": "[", "close": "]" },
+    { "open": "{", "close": "}" },
+    {
+      "open": "\"",
+      "close": "\"",
+      "notIn": ["string"]
+    },
+    {
+      "open": "'",
+      "close": "'",
+      "notIn": ["string"]
+    }
+  ],
+  "surroundingPairs": [
+    ["(", ")"],
+    ["[", "]"],
+    ["{", "}"],
+    ["\"", "\""],
+    ["'", "'"]
+  ],
+  "indentationRules": {
+    "increaseIndentPattern": {
+      "pattern": "^\\s*(?:%%\\[\\s*$|(?:%%\\[\\s*)?(?:IF\\b.*\\bTHEN|FOR\\b.*\\bDO)\\s*(?:\\]%%)?\\s*$)",
+      "flags": "i"
+    },
+    "decreaseIndentPattern": {
+      "pattern": "^\\s*(?:\\]%%\\s*$|(?:%%\\[\\s*)?(?:ELSEIF\\b.*\\bTHEN|ELSE\\b|ENDIF\\b|NEXT\\b).*(?:\\]%%)?\\s*$)",
+      "flags": "i"
+    }
+  },
+  "onEnterRules": [
+    {
+      "beforeText": "^\\s*%%\\[\\s*$",
+      "action": {
+        "indent": "indent"
+      }
+    },
+    {
+      "beforeText": "^\\s*(?:%%\\[\\s*)?(?:IF\\b.*\\bTHEN|FOR\\b.*\\bDO)\\s*(?:\\]%%)?\\s*$",
+      "action": {
+        "indent": "indent"
+      }
+    },
+    {
+      "beforeText": "^\\s*(?:ELSEIF\\b.*\\bTHEN|ELSE)\\s*$",
+      "action": {
+        "indent": "indent"
+      }
+    }
+  ]
+}

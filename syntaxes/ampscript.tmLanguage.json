@@ -1,0 +1,117 @@
+{
+  "scopeName": "source.ampscript",
+  "patterns": [
+    {
+      "name": "meta.embedded.block.ampscript",
+      "begin": "(%%\\[)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.block.begin.ampscript"
+        }
+      },
+      "end": "(\\]%%)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.block.end.ampscript"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#amp-token-patterns"
+        }
+      ]
+    },
+    {
+      "name": "meta.embedded.inline.ampscript",
+      "begin": "(%%=)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.inline.begin.ampscript"
+        }
+      },
+      "end": "(=%%)",
+      "endCaptures": {
+        "1": {
+          "name": "punctuation.definition.inline.end.ampscript"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#amp-token-patterns"
+        }
+      ]
+    },
+    {
+      "include": "#amp-token-patterns"
+    }
+  ],
+  "repository": {
+    "amp-token-patterns": {
+      "patterns": [
+        {
+          "name": "comment.block.ampscript",
+          "begin": "/\\*",
+          "end": "\\*/"
+        },
+        {
+          "name": "string.quoted.double.ampscript",
+          "begin": "\"",
+          "end": "(?<!\\\\)\"",
+          "patterns": [
+            {
+              "name": "constant.character.escape.ampscript",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "string.quoted.single.ampscript",
+          "begin": "'",
+          "end": "(?<!\\\\)'",
+          "patterns": [
+            {
+              "name": "constant.character.escape.ampscript",
+              "match": "\\\\."
+            }
+          ]
+        },
+        {
+          "name": "variable.other.ampscript",
+          "match": "@[A-Za-z_][A-Za-z0-9_]*"
+        },
+        {
+          "name": "keyword.control.ampscript",
+          "match": "(?i:\\b(?:SET|VAR|IF|THEN|ELSE|ELSEIF|ENDIF|FOR|TO|DO|NEXT|AND|OR|NOT|IN|IS|MOD|DOWNTO|WHILE)\\b)"
+        },
+        {
+          "name": "constant.language.boolean.ampscript",
+          "match": "(?i:\\b(?:TRUE|FALSE)\\b)"
+        },
+        {
+          "name": "constant.numeric.ampscript",
+          "match": "\\b\\d+(?:\\.\\d+)?\\b"
+        },
+        {
+          "name": "support.function.ampscript",
+          "match": "(?i:\\b(?:UpdateSingleSalesforceObject|RetrieveSalesforceObjects|CreateSalesforceObject|DeleteSalesforceObject|BuildRowSetFromString|DataExtensionRowCount|LocalDateToSystemDate|SystemDateToLocalDate|LookupOrderedRowsCS|BuildRowSetFromXML|ContentBlockByName|ContentAreaByName|ContentBlockByKey|LookupOrderedRows|ContentBlockById|RequestParameter|AttributeValue|FormatCurrency|IsEmailAddress|TreatAsContent|ClaimRowValue|RequestHeader|Base64Decode|Base64Encode|FormatNumber|LookupRowsCS|StringToDate|ContentArea|ReplaceList|StringToHex|WrapLongURL|FormatDate|ImageByKey|InsertData|LookupRows|OutputLine|ProperCase|RaiseError|RedirectTo|RegExMatch|UpdateData|DateParse|HttpPost2|ImageById|Lowercase|Substring|Uppercase|UrlEncode|ClaimRow|DateDiff|DatePart|DeleteDE|HttpPost|InsertDE|LongSfid|Multiply|Redirect|RowCount|Subtract|UpdateDE|UpsertDE|DateAdd|HTTPGet|IndexOf|Replace|Concat|Divide|Domain|Format|IsNull|Length|Lookup|Output|Random|SHA256|SHA512|Empty|Field|Char|Guid|SHA1|Trim|Add|IIF|MD5|Now|Row|v)\\b)(?=\\s*\\()"
+        },
+        {
+          "name": "keyword.operator.ampscript",
+          "match": "!=|>=|<=|==|=|>|<|\\+|-|\\*|/|%"
+        },
+        {
+          "name": "punctuation.separator.comma.ampscript",
+          "match": ","
+        },
+        {
+          "name": "punctuation.section.parens.begin.ampscript",
+          "match": "\\("
+        },
+        {
+          "name": "punctuation.section.parens.end.ampscript",
+          "match": "\\)"
+        }
+      ]
+    }
+  }
+}

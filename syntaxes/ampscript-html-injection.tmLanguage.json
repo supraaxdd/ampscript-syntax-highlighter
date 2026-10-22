@@ -1,0 +1,47 @@
+
+{
+  "scopeName": "html.ampscript.injection",
+  "injectionSelector": "L:text.html.basic",
+  "patterns": [
+    {
+      "name": "meta.embedded.block.ampscript",
+      "begin": "%%\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.begin.ampscript"
+        }
+      },
+      "end": "\\]%%",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.block.end.ampscript"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.ampscript#amp-token-patterns"
+        }
+      ]
+    },
+    {
+      "name": "meta.embedded.inline.ampscript",
+      "begin": "%%=",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.inline.begin.ampscript"
+        }
+      },
+      "end": "=%%",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.inline.end.ampscript"
+        }
+      },
+      "patterns": [
+        {
+          "include": "source.ampscript#amp-token-patterns"
+        }
+      ]
+    }
+  ]
+}

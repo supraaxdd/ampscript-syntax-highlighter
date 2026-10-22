@@ -1,0 +1,57 @@
+
+{
+  "name": "ampscript-highlighter",
+  "displayName": "AMPscript Highlighter",
+  "description": "Basic syntax highlighting for Salesforce Marketing Cloud AMPscript.",
+  "version": "0.0.1",
+  "publisher": "your-publisher-id",
+  "main": "./src/extension.js",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:ampscript"
+  ],
+  "scripts": {
+    "test": "node --test",
+    "generate:functions": "node scripts/generate-function-grammar.js"
+  },
+  "contributes": {
+    "configurationDefaults": {
+      "[ampscript]": {
+        "editor.formatOnType": true
+      }
+    },
+    "languages": [
+      {
+        "id": "ampscript",
+        "aliases": ["AMPscript", "ampscript"],
+        "extensions": [".amp", ".ampscript"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "ampscript",
+        "path": "./snippets/ampscript.code-snippets"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "ampscript",
+        "scopeName": "source.ampscript",
+        "path": "./syntaxes/ampscript.tmLanguage.json"
+      },
+      {
+        "scopeName": "html.ampscript.injection",
+        "path": "./syntaxes/ampscript-html-injection.tmLanguage.json",
+        "injectTo": [
+          "text.html.basic"
+        ]
+      }
+    ]
+  }
+}

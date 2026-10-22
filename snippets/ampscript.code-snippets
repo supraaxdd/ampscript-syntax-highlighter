@@ -1,0 +1,42 @@
+{
+  "AMPscript block": {
+    "prefix": "amp",
+    "body": ["%%[", "\t$0", "]%%"],
+    "description": "AMPscript block"
+  },
+  "Variable declaration": {
+    "prefix": "var",
+    "body": "VAR @${1:name}",
+    "description": "Declare a variable"
+  },
+  "Set variable": {
+    "prefix": "set",
+    "body": "SET @${1:name} = ${2:value}",
+    "description": "Assign a variable"
+  },
+  "If block": {
+    "prefix": "if",
+    "body": ["IF ${1:condition} THEN", "\t$0", "ENDIF"],
+    "description": "IF / ENDIF block"
+  },
+  "If else block": {
+    "prefix": "ifelse",
+    "body": [
+      "IF ${1:condition} THEN",
+      "\t${2}",
+      "ELSE",
+      "\t$0",
+      "ENDIF"
+    ],
+    "description": "IF / ELSE / ENDIF block"
+  },
+  "For loop": {
+    "prefix": "for",
+    "body": [
+      "FOR @${1:i} = ${2:1} TO ${3:@count} DO",
+      "\t$0",
+      "NEXT @${1:i}"
+    ],
+    "description": "FOR / NEXT loop"
+  }
+}
