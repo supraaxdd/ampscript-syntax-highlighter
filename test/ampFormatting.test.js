@@ -75,6 +75,46 @@ test("does not treat block delimiters inside strings as blocks", () => {
   assert.equal(formatAmpScriptText(input), input);
 });
 
+test("indents a multi-line IF header", () => {
+  const input = [
+    "IF @a == 1 AND",
+    "@b == 2",
+    "THEN",
+    'SET @message = "Hello"',
+    "ENDIF"
+  ].join("\n");
+
+  const expected = [
+    "IF @a == 1 AND",
+    "    @b == 2",
+    "THEN",
+    '    SET @message = "Hello"',
+    "ENDIF"
+  ].join("\n");
+
+  assert.equal(formatAmpScriptText(input), expected);
+});
+
+test("indents a multi-line FOR header", () => {
+  const input = [
+    "FOR @i = 1 TO",
+    "@count",
+    "DO",
+    "SET @value = @i",
+    "NEXT @i"
+  ].join("\n");
+
+  const expected = [
+    "FOR @i = 1 TO",
+    "    @count",
+    "DO",
+    "    SET @value = @i",
+    "NEXT @i"
+  ].join("\n");
+
+  assert.equal(formatAmpScriptText(input), expected);
+});
+
 test("indents an IF block", () => {
   const input = [
     'IF @name != "" THEN',

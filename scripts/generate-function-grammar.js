@@ -23,9 +23,20 @@ if (!Array.isArray(functions) || functions.length === 0) {
 }
 
 const seen = new Set();
+const names = functions.map((entry) => {
+  if (typeof entry === "string") {
+    return entry;
+  }
 
-for (const name of functions) {
-  if (typeof name !== "string" || !/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) {
+  if (!entry || typeof entry.name !== "string") {
+    throw new Error(`Invalid AMPscript function entry: ${JSON.stringify(entry)}`);
+  }
+
+  return entry.name;
+});
+
+for (const name of names) {
+  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(name)) {
     throw new Error(`Invalid AMPscript function name: ${String(name)}`);
   }
 
@@ -39,7 +50,7 @@ for (const name of functions) {
 }
 
 // Longer names first makes the generated regex easier to inspect.
-const escapedNames = [...functions]
+const escapedNames = [...names]
   .sort((a, b) => b.length - a.length || a.localeCompare(b))
   .map((name) => name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
 
@@ -72,4 +83,4 @@ fs.writeFileSync(
   "utf8"
 );
 
-console.log(`Generated highlighting rule for ${functions.length} functions.`);
+console.log(`Generated highlighting rule for ${names.length} functions.`);

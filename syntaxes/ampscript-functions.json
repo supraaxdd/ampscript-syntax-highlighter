@@ -1,91 +1,1096 @@
-
 [
-  "AttributeValue",
-  "Concat",
-  "Empty",
-  "Format",
-  "FormatCurrency",
-  "FormatDate",
-  "IIF",
-  "IsEmailAddress",
-  "Length",
-  "Lowercase",
-  "ProperCase",
-  "Replace",
-  "Substring",
-  "Uppercase",
-  "Add",
-  "Subtract",
-  "Multiply",
-  "Divide",
-  "DateAdd",
-  "DateDiff",
-  "DateParse",
-  "Now",
-  "Lookup",
-  "LookupRows",
-  "LookupOrderedRows",
-  "LookupRowsCS",
-  "LookupOrderedRowsCS",
-  "Row",
-  "RowCount",
-  "Field",
-  "InsertDE",
-  "UpdateDE",
-  "UpsertDE",
-  "DeleteDE",
-  "RetrieveSalesforceObjects",
-  "CreateSalesforceObject",
-  "UpdateSingleSalesforceObject",
-  "DeleteSalesforceObject",
-  "RaiseError",
-  "Redirect",
-  "RedirectTo",
-  "Output",
-  "TreatAsContent",
-  "HTTPGet",
-  "RegExMatch",
-  "BuildRowSetFromString",
-  "BuildRowSetFromXML",
-  "Base64Decode",
-  "Base64Encode",
-  "Char",
-  "ClaimRow",
-  "ClaimRowValue",
-  "ContentArea",
-  "ContentAreaByName",
-  "ContentBlockById",
-  "ContentBlockByKey",
-  "ContentBlockByName",
-  "DataExtensionRowCount",
-  "DatePart",
-  "Domain",
-  "FormatNumber",
-  "Guid",
-  "HttpPost",
-  "HttpPost2",
-  "ImageById",
-  "ImageByKey",
-  "IndexOf",
-  "InsertData",
-  "IsNull",
-  "LocalDateToSystemDate",
-  "LongSfid",
-  "MD5",
-  "OutputLine",
-  "Random",
-  "ReplaceList",
-  "RequestHeader",
-  "RequestParameter",
-  "SHA1",
-  "SHA256",
-  "SHA512",
-  "StringToDate",
-  "StringToHex",
-  "SystemDateToLocalDate",
-  "Trim",
-  "UpdateData",
-  "UrlEncode",
-  "v",
-  "WrapLongURL"
+  {
+    "name": "AttributeValue",
+    "summary": "Returns a profile, sendable data extension, or data extension attribute. A missing attribute returns an empty string.",
+    "docs": "https://ampscript.guide/attributevalue/",
+    "arguments": [
+      {
+        "name": "attributeName",
+        "description": "Name of the attribute to read."
+      }
+    ]
+  },
+  {
+    "name": "Concat",
+    "summary": "Joins the supplied values into one string.",
+    "docs": "https://ampscript.guide/concat/",
+    "arguments": [
+      {
+        "name": "value",
+        "description": "A value to join. At least two values are required.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "Empty",
+    "summary": "Returns an empty string.",
+    "docs": "https://ampscript.guide/empty/",
+    "arguments": []
+  },
+  {
+    "name": "Format",
+    "summary": "Formats a number or date with a .NET format string.",
+    "docs": "https://ampscript.guide/format/",
+    "arguments": [
+      {
+        "name": "value",
+        "description": "Number or date to format."
+      },
+      {
+        "name": "format",
+        "description": "Format pattern, such as N2 or yyyy-MM-dd."
+      },
+      {
+        "name": "culture",
+        "description": "Optional culture code, such as en-US.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "FormatCurrency",
+    "summary": "Formats a number as currency for a culture.",
+    "docs": "https://ampscript.guide/formatcurrency/",
+    "arguments": [
+      {
+        "name": "value",
+        "description": "Number to format."
+      },
+      {
+        "name": "culture",
+        "description": "Culture or ISO currency code, such as en-US."
+      },
+      {
+        "name": "decimalPlaces",
+        "description": "Number of decimal places.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "FormatDate",
+    "summary": "Formats a date as a string.",
+    "docs": "https://ampscript.guide/formatdate/",
+    "arguments": [
+      {
+        "name": "date",
+        "description": "Date to format."
+      },
+      {
+        "name": "format",
+        "description": "Output pattern, such as yyyy-MM-dd."
+      },
+      {
+        "name": "culture",
+        "description": "Optional culture code.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "IIF",
+    "summary": "In-line If: Returns one value when the condition is true and another when it is false.",
+    "docs": "https://ampscript.guide/iif/",
+    "arguments": [
+      {
+        "name": "condition",
+        "description": "Expression to test."
+      },
+      {
+        "name": "trueValue",
+        "description": "Value returned when the condition is true."
+      },
+      {
+        "name": "falseValue",
+        "description": "Value returned when the condition is false."
+      }
+    ]
+  },
+  {
+    "name": "IsEmailAddress",
+    "summary": "Returns true when the value is a valid email address.",
+    "docs": "https://ampscript.guide/isemailaddress/",
+    "arguments": [
+      {
+        "name": "email",
+        "description": "Address to validate."
+      }
+    ]
+  },
+  {
+    "name": "Length",
+    "summary": "Returns the number of characters in a string.",
+    "docs": "https://ampscript.guide/length/",
+    "arguments": [
+      {
+        "name": "string",
+        "description": "String to measure."
+      }
+    ]
+  },
+  {
+    "name": "Lowercase",
+    "summary": "Returns the string in lowercase.",
+    "docs": "https://ampscript.guide/lowercase/",
+    "arguments": [
+      {
+        "name": "string",
+        "description": "String to convert."
+      }
+    ]
+  },
+  {
+    "name": "ProperCase",
+    "summary": "Returns the string with the first letter of each word capitalized.",
+    "docs": "https://ampscript.guide/propercase/",
+    "arguments": [
+      {
+        "name": "string",
+        "description": "String to convert."
+      }
+    ]
+  },
+  {
+    "name": "Replace",
+    "summary": "Replaces every occurrence of a search string.",
+    "docs": "https://ampscript.guide/replace/",
+    "arguments": [
+      {
+        "name": "subject",
+        "description": "String to search."
+      },
+      {
+        "name": "search",
+        "description": "Text to replace."
+      },
+      {
+        "name": "replacement",
+        "description": "Text to insert."
+      }
+    ]
+  },
+  {
+    "name": "Substring",
+    "summary": "Returns part of a string. The start position is 1-based.",
+    "docs": "https://ampscript.guide/substring/",
+    "arguments": [
+      {
+        "name": "string",
+        "description": "Source string."
+      },
+      {
+        "name": "start",
+        "description": "1-based start position."
+      },
+      {
+        "name": "length",
+        "description": "Number of characters to return. Omit it to read through the end.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "Uppercase",
+    "summary": "Returns the string in uppercase.",
+    "docs": "https://ampscript.guide/uppercase/",
+    "arguments": [
+      {
+        "name": "string",
+        "description": "String to convert."
+      }
+    ]
+  },
+  {
+    "name": "Add",
+    "summary": "Adds two numbers.",
+    "docs": "https://ampscript.guide/add/",
+    "arguments": [
+      { "name": "number1", "description": "First number." },
+      { "name": "number2", "description": "Second number." }
+    ]
+  },
+  {
+    "name": "Subtract",
+    "summary": "Subtracts the second number from the first.",
+    "docs": "https://ampscript.guide/subtract/",
+    "arguments": [
+      { "name": "number1", "description": "Number to subtract from." },
+      { "name": "number2", "description": "Number to subtract." }
+    ]
+  },
+  {
+    "name": "Multiply",
+    "summary": "Multiplies two numbers.",
+    "docs": "https://ampscript.guide/multiply/",
+    "arguments": [
+      { "name": "number1", "description": "First number." },
+      { "name": "number2", "description": "Second number." }
+    ]
+  },
+  {
+    "name": "Divide",
+    "summary": "Divides the first number by the second.",
+    "docs": "https://ampscript.guide/divide/",
+    "arguments": [
+      { "name": "number1", "description": "Dividend." },
+      { "name": "number2", "description": "Divisor." }
+    ]
+  },
+  {
+    "name": "DateAdd",
+    "summary": "Adds an interval to a date.",
+    "docs": "https://ampscript.guide/dateadd/",
+    "arguments": [
+      { "name": "date", "description": "Starting date." },
+      { "name": "interval", "description": "Number of units to add." },
+      { "name": "datePart", "description": "Unit, such as Y, M, D, H, or MI." }
+    ]
+  },
+  {
+    "name": "DateDiff",
+    "summary": "Returns the interval between two dates.",
+    "docs": "https://ampscript.guide/datediff/",
+    "arguments": [
+      { "name": "start", "description": "Start date." },
+      { "name": "end", "description": "End date." },
+      { "name": "datePart", "description": "Unit, such as D, H, or MI." }
+    ]
+  },
+  {
+    "name": "DateParse",
+    "summary": "Parses a date string.",
+    "docs": "https://ampscript.guide/dateparse/",
+    "arguments": [
+      { "name": "date", "description": "Date string to parse." },
+      {
+        "name": "preserveOffsets",
+        "description": "When true, keeps the timezone offset from the input.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "Now",
+    "summary": "Returns the current system date and time.",
+    "docs": "https://ampscript.guide/now/",
+    "arguments": []
+  },
+  {
+    "name": "DatePart",
+    "summary": "Returns one part of a date.",
+    "docs": "https://ampscript.guide/datepart/",
+    "arguments": [
+      { "name": "date", "description": "Source date." },
+      { "name": "datePart", "description": "Unit to read, such as Y, M, D, or H." }
+    ]
+  },
+  {
+    "name": "Lookup",
+    "summary": "Returns one column from the first matching data extension row.",
+    "docs": "https://ampscript.guide/lookup/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "returnColumn", "description": "Column to return." },
+      { "name": "matchColumn", "description": "Column to compare." },
+      { "name": "matchValue", "description": "Value to match." },
+      {
+        "name": "matchPair",
+        "description": "Further match column and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "LookupRows",
+    "summary": "Returns the rows that match the column and value pairs.",
+    "docs": "https://ampscript.guide/lookuprows/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "matchColumn", "description": "Column to compare." },
+      { "name": "matchValue", "description": "Value to match." },
+      {
+        "name": "matchPair",
+        "description": "Further match column and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "LookupOrderedRows",
+    "summary": "Returns a limited, ordered set of matching data extension rows.",
+    "docs": "https://ampscript.guide/lookuporderedrows/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "rowCount", "description": "Maximum number of rows to return." },
+      { "name": "order", "description": "Sort expression, such as CreatedAt DESC." },
+      { "name": "matchColumn", "description": "Column to compare." },
+      { "name": "matchValue", "description": "Value to match." },
+      {
+        "name": "matchPair",
+        "description": "Further match column and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "LookupRowsCS",
+    "summary": "Returns matching rows using a case-sensitive comparison.",
+    "docs": "https://ampscript.guide/lookuprowscs/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "matchColumn", "description": "Column to compare." },
+      { "name": "matchValue", "description": "Value to match." },
+      {
+        "name": "matchPair",
+        "description": "Further match column and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "LookupOrderedRowsCS",
+    "summary": "Returns a limited, ordered row set using a case-sensitive comparison.",
+    "docs": "https://ampscript.guide/lookuporderedrowscs/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "rowCount", "description": "Maximum number of rows to return." },
+      { "name": "order", "description": "Sort expression, such as CreatedAt DESC." },
+      { "name": "matchColumn", "description": "Column to compare." },
+      { "name": "matchValue", "description": "Value to match." },
+      {
+        "name": "matchPair",
+        "description": "Further match column and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "Row",
+    "summary": "Returns one row from a row set. The row number is 1-based.",
+    "docs": "https://ampscript.guide/row/",
+    "arguments": [
+      { "name": "rowset", "description": "Row set to read." },
+      { "name": "rowNumber", "description": "1-based row number." }
+    ]
+  },
+  {
+    "name": "RowCount",
+    "summary": "Returns the number of rows in a row set.",
+    "docs": "https://ampscript.guide/rowcount/",
+    "arguments": [
+      { "name": "rowset", "description": "Row set to count." }
+    ]
+  },
+  {
+    "name": "Field",
+    "summary": "Returns a column from a row.",
+    "docs": "https://ampscript.guide/field/",
+    "arguments": [
+      { "name": "row", "description": "Row to read." },
+      { "name": "column", "description": "Column name." },
+      {
+        "name": "defaultValue",
+        "description": "Value returned when the column is missing.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "InsertDE",
+    "summary": "Inserts a row into a data extension from an email send.",
+    "docs": "https://ampscript.guide/insertde/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "column", "description": "Column to set." },
+      { "name": "value", "description": "Value for that column." },
+      {
+        "name": "columnOrValue",
+        "description": "Further column and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "UpdateDE",
+    "summary": "Updates matching data extension rows from an email send.",
+    "docs": "https://ampscript.guide/updatede/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "matchColumn", "description": "Column used to find rows." },
+      { "name": "matchValue", "description": "Value that identifies the rows." },
+      { "name": "updateColumn", "description": "Column to update." },
+      { "name": "updateValue", "description": "New value for that column." },
+      {
+        "name": "pair",
+        "description": "Further match or update pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "UpsertDE",
+    "summary": "Inserts or updates matching data extension rows from an email send.",
+    "docs": "https://ampscript.guide/upsertde/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "matchColumn", "description": "Column used to find rows." },
+      { "name": "matchValue", "description": "Value that identifies the rows." },
+      { "name": "updateColumn", "description": "Column to write." },
+      { "name": "updateValue", "description": "Value to write." },
+      {
+        "name": "pair",
+        "description": "Further match or update pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "DeleteDE",
+    "summary": "Deletes matching data extension rows from an email send.",
+    "docs": "https://ampscript.guide/deletede/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "matchColumn", "description": "Column used to find rows." },
+      { "name": "matchValue", "description": "Value that identifies the rows." },
+      {
+        "name": "matchPair",
+        "description": "Further match column and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "InsertData",
+    "summary": "Inserts a row into a data extension from a landing page or CloudPage.",
+    "docs": "https://ampscript.guide/insertdata/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "column", "description": "Column to set." },
+      { "name": "value", "description": "Value for that column." },
+      {
+        "name": "columnOrValue",
+        "description": "Further column and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "UpdateData",
+    "summary": "Updates matching data extension rows from a landing page or CloudPage.",
+    "docs": "https://ampscript.guide/updatedata/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." },
+      { "name": "matchColumn", "description": "Column used to find rows." },
+      { "name": "matchValue", "description": "Value that identifies the rows." },
+      { "name": "updateColumn", "description": "Column to update." },
+      { "name": "updateValue", "description": "New value for that column." },
+      {
+        "name": "pair",
+        "description": "Further match or update pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "RetrieveSalesforceObjects",
+    "summary": "Returns fields from Salesforce objects that match the filters.",
+    "docs": "https://ampscript.guide/retrievesalesforceobjects/",
+    "arguments": [
+      { "name": "object", "description": "Salesforce object API name." },
+      { "name": "fields", "description": "Comma-separated field list to return." },
+      { "name": "filterColumn", "description": "Field to filter on." },
+      { "name": "operator", "description": "Comparison operator, such as = or like." },
+      { "name": "filterValue", "description": "Value to compare." },
+      {
+        "name": "filter",
+        "description": "Further filter column, operator, and value triples.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "CreateSalesforceObject",
+    "summary": "Creates a Salesforce object record.",
+    "docs": "https://ampscript.guide/createsalesforceobject/",
+    "arguments": [
+      { "name": "object", "description": "Salesforce object API name." },
+      { "name": "fieldCount", "description": "Number of field and value pairs that follow." },
+      { "name": "field", "description": "Field API name." },
+      { "name": "value", "description": "Value for that field." },
+      {
+        "name": "fieldOrValue",
+        "description": "Further field and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "UpdateSingleSalesforceObject",
+    "summary": "Updates one Salesforce object record by Id.",
+    "docs": "https://ampscript.guide/updatesinglesalesforceobject/",
+    "arguments": [
+      { "name": "object", "description": "Salesforce object API name." },
+      { "name": "id", "description": "Record Id to update." },
+      { "name": "field", "description": "Field API name." },
+      { "name": "value", "description": "New value for that field." },
+      {
+        "name": "fieldOrValue",
+        "description": "Further field and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "DeleteSalesforceObject",
+    "summary": "Deletes one Salesforce object record by Id.",
+    "docs": "https://ampscript.guide/deletesalesforceobject/",
+    "arguments": [
+      { "name": "object", "description": "Salesforce object API name." },
+      { "name": "id", "description": "Record Id to delete." }
+    ]
+  },
+  {
+    "name": "RaiseError",
+    "summary": "Stops processing and records an error.",
+    "docs": "https://ampscript.guide/raiseerror/",
+    "arguments": [
+      { "name": "message", "description": "Error message to record." },
+      {
+        "name": "option",
+        "description": "Optional flags, API error code, and whether processing continues.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "Redirect",
+    "summary": "Redirects the browser to a URL.",
+    "docs": "https://ampscript.guide/redirect/",
+    "arguments": [
+      { "name": "url", "description": "Destination URL." }
+    ]
+  },
+  {
+    "name": "RedirectTo",
+    "summary": "Wraps a URL so the redirect is tracked.",
+    "docs": "https://ampscript.guide/redirectto/",
+    "arguments": [
+      { "name": "url", "description": "Destination URL." }
+    ]
+  },
+  {
+    "name": "Output",
+    "summary": "Writes a value into the rendered content.",
+    "docs": "https://ampscript.guide/output/",
+    "arguments": [
+      { "name": "content", "description": "Value to write." }
+    ]
+  },
+  {
+    "name": "OutputLine",
+    "summary": "Writes a value followed by a line break.",
+    "docs": "https://ampscript.guide/outputline/",
+    "arguments": [
+      { "name": "content", "description": "Value to write." }
+    ]
+  },
+  {
+    "name": "TreatAsContent",
+    "summary": "Evaluates a string as AMPscript and returns the rendered result.",
+    "docs": "https://ampscript.guide/treatascontent/",
+    "arguments": [
+      { "name": "content", "description": "String that may contain AMPscript." }
+    ]
+  },
+  {
+    "name": "TreatAsContentArea",
+    "summary": "Renders a content area and records an impression.",
+    "docs": "https://ampscript.guide/treatascontentarea/",
+    "arguments": [
+      { "name": "contentArea", "description": "Content area name or identifier." },
+      {
+        "name": "impressionRegion",
+        "description": "Impression region name.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "HTTPGet",
+    "summary": "Returns the body of an HTTP GET request.",
+    "docs": "https://ampscript.guide/httpget/",
+    "arguments": [
+      { "name": "url", "description": "URL to request." },
+      {
+        "name": "allowEmpty",
+        "description": "When true, an empty response does not raise an error.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "HttpPost",
+    "summary": "Sends an HTTP POST and returns the response body.",
+    "docs": "https://ampscript.guide/httppost/",
+    "arguments": [
+      { "name": "url", "description": "URL to request." },
+      { "name": "contentType", "description": "Content-Type header value." },
+      { "name": "contentLength", "description": "Content length, or -1 to calculate it." },
+      { "name": "content", "description": "Request body." }
+    ]
+  },
+  {
+    "name": "HttpPost2",
+    "summary": "Sends an HTTP POST with additional headers.",
+    "docs": "https://ampscript.guide/httppost2/",
+    "arguments": [
+      { "name": "url", "description": "URL to request." },
+      { "name": "contentType", "description": "Content-Type header value." },
+      { "name": "content", "description": "Request body." },
+      { "name": "headerName", "description": "Name of an extra header." },
+      { "name": "headerValue", "description": "Value of that header." },
+      {
+        "name": "header",
+        "description": "Further header name and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "RegExMatch",
+    "summary": "Returns a regular-expression match from a string.",
+    "docs": "https://ampscript.guide/regexmatch/",
+    "arguments": [
+      { "name": "subject", "description": "String to search." },
+      { "name": "pattern", "description": "Regular expression." },
+      { "name": "option", "description": "0 for the first match, 1 for the position, or 2 for all matches." }
+    ]
+  },
+  {
+    "name": "BuildRowSetFromString",
+    "summary": "Splits a string on a delimiter and returns a row set.",
+    "docs": "https://ampscript.guide/buildrowsetfromstring/",
+    "arguments": [
+      { "name": "string", "description": "String to split." },
+      { "name": "delimiter", "description": "Delimiter between values." }
+    ]
+  },
+  {
+    "name": "BuildRowSetFromXML",
+    "summary": "Returns a row set of nodes selected by an XPath expression.",
+    "docs": "https://ampscript.guide/buildrowsetfromxml/",
+    "arguments": [
+      { "name": "xml", "description": "XML document." },
+      { "name": "xpath", "description": "XPath expression." },
+      {
+        "name": "includeChildren",
+        "description": "When true, includes child nodes.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "BuildRowSetFromJSON",
+    "summary": "Returns a row set from a JSON string.",
+    "docs": "https://ampscript.guide/buildrowsetfromjson/",
+    "arguments": [
+      { "name": "json", "description": "JSON array or object to read." }
+    ]
+  },
+  {
+    "name": "Base64Decode",
+    "summary": "Decodes a Base64 string.",
+    "docs": "https://ampscript.guide/base64decode/",
+    "arguments": [
+      { "name": "string", "description": "Base64 text to decode." }
+    ]
+  },
+  {
+    "name": "Base64Encode",
+    "summary": "Encodes a string as Base64.",
+    "docs": "https://ampscript.guide/base64encode/",
+    "arguments": [
+      { "name": "string", "description": "Text to encode." },
+      {
+        "name": "encoding",
+        "description": "Character encoding, such as UTF-8.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "Char",
+    "summary": "Returns the character for a character code.",
+    "docs": "https://ampscript.guide/char/",
+    "arguments": [
+      { "name": "code", "description": "Character code." },
+      {
+        "name": "charset",
+        "description": "Character set used to interpret the code.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "ClaimRow",
+    "summary": "Claims one unused row in a data extension and returns that row.",
+    "docs": "https://ampscript.guide/claimrow/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension that holds the rows." },
+      { "name": "claimColumn", "description": "Column that records whether a row is claimed." },
+      { "name": "isClaimed", "description": "Value that marks a row as claimed, usually false when searching." },
+      { "name": "matchColumn", "description": "Column used to select a row." },
+      { "name": "matchValue", "description": "Value to match." },
+      {
+        "name": "matchPair",
+        "description": "Further match column and value pairs.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "ClaimRowValue",
+    "summary": "Claims a row and returns one column from it.",
+    "docs": "https://ampscript.guide/claimrowvalue/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension that holds the rows." },
+      { "name": "returnColumn", "description": "Column to return from the claimed row." },
+      { "name": "claimColumn", "description": "Column that records whether a row is claimed." },
+      { "name": "isClaimed", "description": "Value that marks a row as claimed." },
+      { "name": "matchColumn", "description": "Column used to select a row." },
+      { "name": "matchValue", "description": "Value to match." }
+    ]
+  },
+  {
+    "name": "ContentArea",
+    "summary": "Returns a content area by its numeric identifier.",
+    "docs": "https://ampscript.guide/contentarea/",
+    "arguments": [
+      { "name": "id", "description": "Content area identifier." }
+    ]
+  },
+  {
+    "name": "ContentAreaByName",
+    "summary": "Returns a content area by name.",
+    "docs": "https://ampscript.guide/contentareabyname/",
+    "arguments": [
+      { "name": "name", "description": "Content area name." }
+    ]
+  },
+  {
+    "name": "ContentBlockById",
+    "summary": "Returns a content block by its numeric identifier.",
+    "docs": "https://ampscript.guide/contentblockbyid/",
+    "arguments": [
+      { "name": "id", "description": "Content block identifier." }
+    ]
+  },
+  {
+    "name": "ContentBlockByKey",
+    "summary": "Returns a content block by customer key.",
+    "docs": "https://ampscript.guide/contentblockbykey/",
+    "arguments": [
+      { "name": "key", "description": "Content block customer key." }
+    ]
+  },
+  {
+    "name": "ContentBlockByName",
+    "summary": "Returns a content block by name.",
+    "docs": "https://ampscript.guide/contentblockbyname/",
+    "arguments": [
+      { "name": "name", "description": "Content block name, including its folder path when needed." }
+    ]
+  },
+  {
+    "name": "DataExtensionRowCount",
+    "summary": "Returns the number of rows in a data extension.",
+    "docs": "https://ampscript.guide/dataextensionrowcount/",
+    "arguments": [
+      { "name": "dataExtension", "description": "Data extension name or external key." }
+    ]
+  },
+  {
+    "name": "Domain",
+    "summary": "Returns the domain portion of an email address.",
+    "docs": "https://ampscript.guide/domain/",
+    "arguments": [
+      { "name": "email", "description": "Email address." }
+    ]
+  },
+  {
+    "name": "FormatNumber",
+    "summary": "Formats a number with a format pattern.",
+    "docs": "https://ampscript.guide/formatnumber/",
+    "arguments": [
+      { "name": "number", "description": "Number to format." },
+      { "name": "format", "description": "Format pattern, such as N2 or C." },
+      {
+        "name": "culture",
+        "description": "Optional culture code.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "Guid",
+    "summary": "Returns a new GUID.",
+    "docs": "https://ampscript.guide/guid/",
+    "arguments": []
+  },
+  {
+    "name": "ImageById",
+    "summary": "Returns the URL of a portfolio image by its identifier.",
+    "docs": "https://ampscript.guide/imagebyid/",
+    "arguments": [
+      { "name": "id", "description": "Portfolio image identifier." }
+    ]
+  },
+  {
+    "name": "ImageByKey",
+    "summary": "Returns the URL of a portfolio image by customer key.",
+    "docs": "https://ampscript.guide/imagebykey/",
+    "arguments": [
+      { "name": "key", "description": "Portfolio image customer key." },
+      {
+        "name": "defaultUrl",
+        "description": "URL used when the image is missing.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "IndexOf",
+    "summary": "Returns the 1-based position of a search string, or 0 when it is absent.",
+    "docs": "https://ampscript.guide/indexof/",
+    "arguments": [
+      { "name": "string", "description": "String to search." },
+      { "name": "search", "description": "Text to find." }
+    ]
+  },
+  {
+    "name": "IsNull",
+    "summary": "Returns true when the value is null.",
+    "docs": "https://ampscript.guide/isnull/",
+    "arguments": [
+      { "name": "value", "description": "Value to test." }
+    ]
+  },
+  {
+    "name": "LocalDateToSystemDate",
+    "summary": "Converts a date from the business unit timezone to system time.",
+    "docs": "https://ampscript.guide/localdatetosystemdate/",
+    "arguments": [
+      { "name": "date", "description": "Local date to convert." }
+    ]
+  },
+  {
+    "name": "SystemDateToLocalDate",
+    "summary": "Converts a date from system time to the business unit timezone.",
+    "docs": "https://ampscript.guide/systemdatetolocaldate/",
+    "arguments": [
+      { "name": "date", "description": "System date to convert." }
+    ]
+  },
+  {
+    "name": "LongSfid",
+    "summary": "Converts a 15-character Salesforce Id to its 18-character form.",
+    "docs": "https://ampscript.guide/longsfid/",
+    "arguments": [
+      { "name": "id", "description": "15-character Salesforce Id." }
+    ]
+  },
+  {
+    "name": "MD5",
+    "summary": "Returns the MD5 hash of a string.",
+    "docs": "https://ampscript.guide/md5/",
+    "arguments": [
+      { "name": "string", "description": "Text to hash." },
+      {
+        "name": "encoding",
+        "description": "Character encoding, such as UTF-8.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "SHA1",
+    "summary": "Returns the SHA-1 hash of a string.",
+    "docs": "https://ampscript.guide/sha1/",
+    "arguments": [
+      { "name": "string", "description": "Text to hash." },
+      {
+        "name": "encoding",
+        "description": "Character encoding, such as UTF-8.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "SHA256",
+    "summary": "Returns the SHA-256 hash of a string.",
+    "docs": "https://ampscript.guide/sha256/",
+    "arguments": [
+      { "name": "string", "description": "Text to hash." },
+      {
+        "name": "encoding",
+        "description": "Character encoding, such as UTF-8.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "SHA512",
+    "summary": "Returns the SHA-512 hash of a string.",
+    "docs": "https://ampscript.guide/sha512/",
+    "arguments": [
+      { "name": "string", "description": "Text to hash." },
+      {
+        "name": "encoding",
+        "description": "Character encoding, such as UTF-8.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "Random",
+    "summary": "Returns a random integer from the minimum through the maximum.",
+    "docs": "https://ampscript.guide/random/",
+    "arguments": [
+      { "name": "minimum", "description": "Lowest integer that can be returned." },
+      { "name": "maximum", "description": "Highest integer that can be returned." }
+    ]
+  },
+  {
+    "name": "ReplaceList",
+    "summary": "Replaces each listed search string with the same replacement.",
+    "docs": "https://ampscript.guide/replacelist/",
+    "arguments": [
+      { "name": "subject", "description": "String to search." },
+      { "name": "replacement", "description": "Text that replaces every match." },
+      {
+        "name": "search",
+        "description": "A string to replace. At least one search string is required.",
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "RequestHeader",
+    "summary": "Returns an HTTP request header from the current page request.",
+    "docs": "https://ampscript.guide/requestheader/",
+    "arguments": [
+      { "name": "name", "description": "Header name." }
+    ]
+  },
+  {
+    "name": "RequestParameter",
+    "summary": "Returns a query-string or form parameter from the current request.",
+    "docs": "https://ampscript.guide/requestparameter/",
+    "arguments": [
+      { "name": "name", "description": "Parameter name." }
+    ]
+  },
+  {
+    "name": "StringToDate",
+    "summary": "Converts a string to a date.",
+    "docs": "https://ampscript.guide/stringtodate/",
+    "arguments": [
+      { "name": "string", "description": "Date string to convert." }
+    ]
+  },
+  {
+    "name": "StringToHex",
+    "summary": "Returns the hexadecimal representation of a string.",
+    "docs": "https://ampscript.guide/stringtohex/",
+    "arguments": [
+      { "name": "string", "description": "Text to convert." }
+    ]
+  },
+  {
+    "name": "Trim",
+    "summary": "Removes leading and trailing whitespace.",
+    "docs": "https://ampscript.guide/trim/",
+    "arguments": [
+      { "name": "string", "description": "String to trim." }
+    ]
+  },
+  {
+    "name": "UrlEncode",
+    "summary": "Returns a URL-encoded string.",
+    "docs": "https://ampscript.guide/urlencode/",
+    "arguments": [
+      { "name": "string", "description": "Text to encode." },
+      {
+        "name": "encoding",
+        "description": "1 to encode as a full URL, or 0 to encode as a component.",
+        "optional": true
+      },
+      {
+        "name": "outputEncoding",
+        "description": "Character encoding of the result.",
+        "optional": true
+      }
+    ]
+  },
+  {
+    "name": "v",
+    "summary": "Returns the value of a variable or expression for output.",
+    "docs": "https://ampscript.guide/v/",
+    "arguments": [
+      { "name": "expression", "description": "Variable or expression to output." }
+    ]
+  },
+  {
+    "name": "WrapLongURL",
+    "summary": "Wraps a long URL so it can be tracked.",
+    "docs": "https://ampscript.guide/wraplongurl/",
+    "arguments": [
+      { "name": "url", "description": "URL to wrap." }
+    ]
+  },
+  {
+    "name": "CloudPagesURL",
+    "summary": "Builds a CloudPages URL and attaches encrypted parameters.",
+    "docs": "https://ampscript.guide/cloudpagesurl/",
+    "arguments": [
+      { "name": "pageId", "description": "CloudPage identifier." },
+      {
+        "name": "parameter",
+        "description": "Parameter name and value pairs to encrypt into the URL.",
+        "optional": true,
+        "repeatable": true
+      }
+    ]
+  },
+  {
+    "name": "EncryptSymmetric",
+    "summary": "Encrypts a string with a symmetric algorithm.",
+    "docs": "https://ampscript.guide/encryptsymmetric/",
+    "arguments": [
+      { "name": "value", "description": "Text to encrypt." },
+      { "name": "algorithm", "description": "Algorithm, such as aes, des, or tripledes." },
+      { "name": "passwordKey", "description": "External key of the password stored in the key management app." },
+      { "name": "password", "description": "Password value, or null when the key supplies it." },
+      { "name": "saltKey", "description": "External key of the salt." },
+      { "name": "salt", "description": "Salt value, or null when the key supplies it." },
+      { "name": "ivKey", "description": "External key of the initialization vector." },
+      { "name": "iv", "description": "Initialization vector, or null when the key supplies it." }
+    ]
+  },
+  {
+    "name": "DecryptSymmetric",
+    "summary": "Decrypts a string that was encrypted with a symmetric algorithm.",
+    "docs": "https://ampscript.guide/decryptsymmetric/",
+    "arguments": [
+      { "name": "value", "description": "Text to decrypt." },
+      { "name": "algorithm", "description": "Algorithm used to encrypt the text." },
+      { "name": "passwordKey", "description": "External key of the password stored in the key management app." },
+      { "name": "password", "description": "Password value, or null when the key supplies it." },
+      { "name": "saltKey", "description": "External key of the salt." },
+      { "name": "salt", "description": "Salt value, or null when the key supplies it." },
+      { "name": "ivKey", "description": "External key of the initialization vector." },
+      { "name": "iv", "description": "Initialization vector, or null when the key supplies it." }
+    ]
+  }
 ]

@@ -48,7 +48,12 @@ function formatAmpScriptText(
 
     let indentLevel = stack.length;
 
-    if (action && (action.role === "branch" || action.role === "close")) {
+    if (
+      action &&
+      (action.role === "align" ||
+        action.role === "branch" ||
+        action.role === "close")
+    ) {
       const targetIndex = findMatchingBlock(stack, action.targetType);
 
       if (targetIndex >= 0) {
@@ -58,13 +63,14 @@ function formatAmpScriptText(
           // Keep the IF open, but close any nested blocks
           // left open before the branch.
           stack.splice(targetIndex + 1);
-        } else {
+        } else if (action.role === "close") {
           // Close the matched block and any malformed blocks
           // nested inside it.
           stack.splice(targetIndex);
         }
       }
       // Unmatched closing statements do not mutate the stack.
+      // A bare THEN or DO only lines up with its opener.
     }
 
     formattedLines.push(

@@ -1,4 +1,3 @@
-const path = require("path");
 const vscode = require("vscode");
 const { formatAmpScriptText } = require("./ampFormatting");
 const {
@@ -7,10 +6,12 @@ const {
   collectDeclaredVariables,
   isInsideCommentOrString
 } = require("./ampStructure");
-
-const functions = require(
-  path.join(__dirname, "..", "syntaxes", "ampscript-functions.json")
-);
+const {
+  catalogue,
+  findFunction,
+  buildSignature,
+  callAtCursor
+} = require("./ampFunctions");
 
 const KEYWORDS = [
   "SET",
@@ -31,7 +32,6 @@ const KEYWORDS = [
   "IS",
   "MOD",
   "DOWNTO",
-  "WHILE",
   "TRUE",
   "FALSE"
 ];
@@ -78,6 +78,13 @@ function activate(context) {
       selector,
       completionProvider,
       "@"
+    ),
+    vscode.languages.registerHoverProvider(selector, hoverProvider),
+    vscode.languages.registerSignatureHelpProvider(
+      selector,
+      signatureProvider,
+      "(",
+      ","
     ),
     vscode.languages.registerDocumentSymbolProvider(
       selector,
@@ -211,17 +218,18 @@ const completionProvider = {
       );
     }
 
-    for (const name of functions) {
+    for (const entry of catalogue) {
       const item = completionItem({
-        label: name,
+        label: entry.name,
         kind: vscode.CompletionItemKind.Function,
-        detail: "AMPscript function",
-        sortText: `2:${name}`,
+        detail: entry.summary,
+        sortText: `2:${entry.name}`,
         range
       });
+      item.documentation = functionDocumentation(entry);
 
       if (!hasCall) {
-        item.insertText = new vscode.SnippetString(`${name}($0)`);
+        item.insertText = new vscode.SnippetString(`${entry.name}($0)`);
       }
 
       items.push(item);
@@ -254,6 +262,79 @@ function completionItem({ label, kind, detail, sortText, range }) {
 
   return item;
 }
+
+function functionDocumentation(entry) {
+  const signature = buildSignature(entry);
+  const documentation = new vscode.MarkdownString();
+  documentation.appendCodeblock(signature.label, "ampscript");
+  documentation.appendMarkdown(`\n\n${entry.summary}`);
+
+  if (entry.docs) {
+    documentation.appendMarkdown(`\n\n[Documentation](${entry.docs})`);
+  }
+
+  return documentation;
+}
+
+const hoverProvider = {
+  provideHover(document, position) {
+    const range = document.getWordRangeAtPosition(
+      position,
+      /[A-Za-z_][A-Za-z0-9_]*/
+    );
+
+    if (!range) {
+      return null;
+    }
+
+    const entry = findFunction(document.getText(range));
+
+    if (!entry) {
+      return null;
+    }
+
+    return new vscode.Hover(functionDocumentation(entry), range);
+  }
+};
+
+const signatureProvider = {
+  provideSignatureHelp(document, position) {
+    const context = callAtCursor(
+      document.getText(),
+      position.line,
+      position.character
+    );
+
+    if (!context) {
+      return null;
+    }
+
+    const entry = findFunction(context.name);
+
+    if (!entry) {
+      return null;
+    }
+
+    const built = buildSignature(entry);
+    const signature = new vscode.SignatureInformation(built.label);
+    signature.documentation = new vscode.MarkdownString(entry.summary);
+    signature.parameters = built.parameters.map((parameter) => {
+      const info = new vscode.ParameterInformation(parameter.label);
+      info.documentation = parameter.documentation;
+      return info;
+    });
+
+    const help = new vscode.SignatureHelp();
+    help.signatures = [signature];
+    help.activeSignature = 0;
+    help.activeParameter =
+      signature.parameters.length === 0
+        ? 0
+        : Math.min(context.commas, signature.parameters.length - 1);
+
+    return help;
+  }
+};
 
 function diagnosticsFor(document) {
   const { problems } = scanAmpScript(document.getText());
@@ -317,7 +398,7 @@ function toSymbols(blocks, document, parentEnd) {
 
 function symbolName(block) {
   if (block.type === "AMP_OPEN") {
-    return "AMPscript";
+    return `AMPscript (line ${block.openLine + 1})`;
   }
 
   return block.header;
