@@ -6,7 +6,7 @@
  * is not treated as AMPscript.
  */
 
-const { scanAmpScript, collectFoldingRanges } = require("./ampStructure");
+const { scanAmpScript } = require("./ampStructure");
 const { indentForLine } = require("./ampFormatting");
 
 function offsetToPosition(text, offset) {
@@ -165,102 +165,163 @@ function lineEntirelyInRegion(text, line, region) {
   return before.trim() === "" && after.trim() === "";
 }
 
+function closedBlockRegions(text) {
+  return findEmbeddedRegions(text).filter(
+    (region) => region.kind === "block" && region.closed
+  );
+}
+
+function neutralizeDelimiters(line) {
+  return line.replace(/^(\s*)%%\[/, "$1   ").replace(/\]%%(\s*)$/, "   $1");
+}
+
+function structuralProgram(text) {
+  const entries = [];
+
+  for (const region of closedBlockRegions(text)) {
+    const lines = sliceOf(text, region).split(/\r\n|\n/);
+
+    lines.forEach((line, sliceLine) => {
+      entries.push({
+        region,
+        sliceLine,
+        text: neutralizeDelimiters(line)
+      });
+    });
+  }
+
+  return {
+    source: entries.map((entry) => entry.text).join("\n"),
+    entries
+  };
+}
+
+function problemFromEntry(text, entry, message) {
+  const lineText =
+    sliceOf(text, entry.region).split(/\r\n|\n/)[entry.sliceLine] || "";
+  const start = Math.max(0, lineText.search(/\S/));
+  const from = mapSlice(text, entry.region, entry.sliceLine, start);
+  const to = mapSlice(text, entry.region, entry.sliceLine, lineText.length);
+
+  return {
+    line: from.line,
+    startCharacter: from.character,
+    endCharacter: to.line === from.line ? to.character : from.character,
+    message
+  };
+}
+
 function embeddedProblems(text) {
   const problems = [];
 
   for (const region of findEmbeddedRegions(text)) {
-    if (!region.closed) {
-      const end = offsetToPosition(text, region.startOffset + 3);
-      problems.push({
-        line: region.start.line,
-        startCharacter: region.start.character,
-        endCharacter: end.character,
-        message:
-          region.kind === "block"
-            ? "Unclosed AMPscript block."
-            : "Unclosed AMPscript expression."
-      });
+    if (region.closed) {
       continue;
     }
 
-    const slice = sliceOf(text, region);
-    const sliceLines = slice.split(/\r\n|\n/);
+    const end = offsetToPosition(text, region.startOffset + 3);
+    problems.push({
+      line: region.start.line,
+      startCharacter: region.start.character,
+      endCharacter: end.character,
+      message:
+        region.kind === "block"
+          ? "Unclosed AMPscript block."
+          : "Unclosed AMPscript expression."
+    });
+  }
 
-    for (const problem of scanAmpScript(slice).problems) {
-      const lineText = sliceLines[problem.line] || "";
-      const start = Math.max(0, lineText.search(/\S/));
-      const from = mapSlice(text, region, problem.line, start);
-      const to = mapSlice(text, region, problem.line, lineText.length);
+  const program = structuralProgram(text);
 
-      problems.push({
-        line: from.line,
-        startCharacter: from.character,
-        endCharacter: to.line === from.line ? to.character : from.character,
-        message: problem.message
-      });
+  for (const problem of scanAmpScript(program.source).problems) {
+    const entry = program.entries[problem.line];
+
+    if (entry) {
+      problems.push(problemFromEntry(text, entry, problem.message));
     }
   }
 
   return problems;
 }
 
-function mapBlocks(blocks, text, region) {
-  return blocks.map((block) => ({
-    type: block.type,
-    header: block.header,
-    openLine: mapSlice(text, region, block.openLine, 0).line,
-    closeLine:
-      block.closeLine === null
-        ? null
-        : mapSlice(text, region, block.closeLine, 0).line,
-    children: mapBlocks(block.children, text, region)
-  }));
+function mapStructuralBlocks(blocks, entries) {
+  return blocks.flatMap((block) => {
+    const open = entries[block.openLine];
+    const close = block.closeLine === null ? null : entries[block.closeLine];
+
+    if (!open || (block.closeLine !== null && !close)) {
+      return [];
+    }
+
+    return [
+      {
+        type: block.type,
+        header: block.header,
+        openLine: open.region.start.line + open.sliceLine,
+        closeLine: close ? close.region.start.line + close.sliceLine : null,
+        children: mapStructuralBlocks(block.children, entries)
+      }
+    ];
+  });
+}
+
+function regionOwns(regionBlock, block) {
+  const insideOpen =
+    block.openLine >= regionBlock.openLine &&
+    block.openLine <= regionBlock.closeLine;
+  const insideClose =
+    block.closeLine === null ||
+    (block.closeLine >= regionBlock.openLine &&
+      block.closeLine <= regionBlock.closeLine);
+
+  return insideOpen && insideClose;
 }
 
 function embeddedBlocks(text) {
-  const blocks = [];
+  const regions = closedBlockRegions(text).map((region) => ({
+    type: "AMP_OPEN",
+    header: sliceOf(text, region).split(/\r\n|\n/)[0].trim(),
+    openLine: region.start.line,
+    closeLine: region.end.line,
+    children: []
+  }));
+  const program = structuralProgram(text);
+  const structural = mapStructuralBlocks(
+    scanAmpScript(program.source).blocks,
+    program.entries
+  );
+  const spanning = [];
 
-  for (const region of findEmbeddedRegions(text)) {
-    if (region.kind !== "block" || !region.closed) {
-      continue;
+  for (const block of structural) {
+    const host = regions.find((region) => regionOwns(region, block));
+
+    if (host) {
+      host.children.push(block);
+    } else {
+      spanning.push(block);
     }
-
-    blocks.push(
-      ...mapBlocks(scanAmpScript(sliceOf(text, region)).blocks, text, region)
-    );
   }
 
-  return blocks;
+  return [...regions, ...spanning];
 }
 
-function embeddedFolds(text) {
-  const folds = [];
-
-  for (const region of findEmbeddedRegions(text)) {
-    if (region.kind !== "block" || !region.closed) {
-      continue;
+function foldsFromBlocks(blocks, folds = []) {
+  for (const block of blocks) {
+    if (block.closeLine !== null && block.closeLine > block.openLine) {
+      folds.push({
+        start: block.openLine,
+        end: block.closeLine
+      });
     }
 
-    const slice = sliceOf(text, region);
-    const ranges = collectFoldingRanges(
-      scanAmpScript(slice).blocks,
-      slice.split(/\r\n|\n/).length
-    );
-
-    for (const range of ranges) {
-      const start = mapSlice(text, region, range.start, 0);
-      const end = mapSlice(text, region, range.end, 0);
-
-      if (end.line > start.line) {
-        folds.push({
-          start: start.line,
-          end: end.line
-        });
-      }
-    }
+    foldsFromBlocks(block.children, folds);
   }
 
   return folds;
+}
+
+function embeddedFolds(text) {
+  return foldsFromBlocks(embeddedBlocks(text));
 }
 
 function lineBounds(text, line) {
