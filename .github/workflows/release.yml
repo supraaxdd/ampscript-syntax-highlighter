@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing deployment tag, for example v0.2.1"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Require a deployment tag that matches package.json
+        env:
+          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+        run: |
+          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Skipping prerelease tag $RELEASE_TAG."
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          version="$(node -p "require('./package.json').version")"
+          if [ "$RELEASE_TAG" != "v${version}" ]; then
+            echo "Tag $RELEASE_TAG does not match package.json version ${version}."
+            exit 1
+          fi
+
+          echo "release=true" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+        id: gate
+
+      - name: Test
+        if: steps.gate.outputs.release == 'true'
+        run: npm test
+
+      - name: Package the extension
+        if: steps.gate.outputs.release == 'true'
+        run: npx --yes @vscode/vsce package --no-dependencies
+
+      - name: Take the release notes from the changelog
+        if: steps.gate.outputs.release == 'true'
+        run: |
+          awk -v version="${{ steps.gate.outputs.version }}" '
+            $0 ~ "^## " version "[[:space:]]*$" { capture = 1; next }
+            capture && /^## / { exit }
+            capture { print }
+          ' CHANGELOG.md > release-notes.md
+          if [ ! -s release-notes.md ]; then
+            echo "Released ${{ steps.gate.outputs.version }}." > release-notes.md
+          fi
+
+      - name: Publish the GitHub Release
+        if: steps.gate.outputs.release == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+        run: |
+          asset="ampscript-highlighter-${{ steps.gate.outputs.version }}.vsix"
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "$asset" --clobber
+          else
+            gh release create "$RELEASE_TAG" "$asset" \
+              --title "$RELEASE_TAG" \
+              --notes-file release-notes.md \
+              --verify-tag
+          fi
