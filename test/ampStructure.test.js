@@ -1,5 +1,6 @@
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
+const config = require("../language-configuration.json");
 
 const {
   scanAmpScript,
@@ -11,6 +12,34 @@ const {
 function problems(text) {
   return scanAmpScript(text).problems;
 }
+
+test("accepts an IF whose THEN is on a later line", () => {
+  const text = [
+    "IF @a == 1 AND",
+    "@b == 2",
+    "THEN",
+    "SET @message = 1",
+    "ENDIF"
+  ].join("\n");
+
+  assert.deepEqual(problems(text), []);
+});
+
+test("reports an unclosed multi-line IF", () => {
+  const text = ["IF @a == 1 AND", "@b == 2 THEN"].join("\n");
+
+  assert.deepEqual(problems(text), [
+    { line: 0, message: "Unclosed IF block." }
+  ]);
+});
+
+test("accepts a FOR whose DO is on a later line", () => {
+  const text = ["FOR @i = 1 TO", "@count DO", "SET @value = @i", "NEXT @i"].join(
+    "\n"
+  );
+
+  assert.deepEqual(problems(text), []);
+});
 
 test("reports an unclosed IF", () => {
   const text = ["IF @active == TRUE THEN", 'SET @message = "Hello"'].join(
@@ -138,6 +167,35 @@ test("collects variables declared with VAR, SET, and FOR", () => {
     "i",
     "other"
   ]);
+});
+
+test("indent rules keep VAR put and follow multi-line headers", () => {
+  const increase = new RegExp(
+    config.indentationRules.increaseIndentPattern.pattern,
+    config.indentationRules.increaseIndentPattern.flags
+  );
+  const decrease = new RegExp(
+    config.indentationRules.decreaseIndentPattern.pattern,
+    config.indentationRules.decreaseIndentPattern.flags
+  );
+
+  assert.equal(increase.test("IF @a == 1 AND"), true);
+  assert.equal(increase.test("FOR @i = 1 TO"), true);
+  assert.equal(increase.test("THEN"), true);
+  assert.equal(decrease.test("THEN"), true);
+  assert.equal(decrease.test("DO"), true);
+  assert.equal(increase.test("VAR @name"), false);
+  assert.equal(decrease.test("VAR @name"), false);
+  assert.equal(
+    config.autoClosingPairs.some((pair) => pair.open === "["),
+    false
+  );
+  assert.equal(
+    config.autoClosingPairs.some(
+      (pair) => pair.open === "%%[" && pair.close === "]%%"
+    ),
+    true
+  );
 });
 
 test("knows when the cursor is inside a string or comment", () => {

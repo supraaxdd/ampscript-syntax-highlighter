@@ -90,7 +90,7 @@ function getStatement(code) {
     return null;
   }
 
-  if (/^ELSEIF\b/i.test(source) && /\bTHEN\s*$/i.test(source)) {
+  if (/^ELSEIF\b/i.test(source)) {
     return { type: "ELSEIF" };
   }
 
@@ -106,12 +106,21 @@ function getStatement(code) {
     return { type: "NEXT" };
   }
 
-  if (/^IF\b/i.test(source) && /\bTHEN\s*$/i.test(source)) {
+  // THEN and DO may sit on a later line than IF or FOR.
+  if (/^IF\b/i.test(source)) {
     return { type: "IF" };
   }
 
-  if (/^FOR\b/i.test(source) && /\bDO\s*$/i.test(source)) {
+  if (/^FOR\b/i.test(source)) {
     return { type: "FOR" };
+  }
+
+  if (/^THEN\s*$/i.test(source)) {
+    return { type: "THEN" };
+  }
+
+  if (/^DO\s*$/i.test(source)) {
+    return { type: "DO" };
   }
 
   return null;
@@ -120,6 +129,14 @@ function getStatement(code) {
 function classifyStatement(statement) {
   if (!statement) {
     return null;
+  }
+
+  if (statement.type === "THEN") {
+    return { role: "align", targetType: "IF" };
+  }
+
+  if (statement.type === "DO") {
+    return { role: "align", targetType: "FOR" };
   }
 
   if (statement.type === "ELSE" || statement.type === "ELSEIF") {
@@ -223,7 +240,7 @@ function scanAmpScript(text) {
     const statement = getStatement(code);
     const action = classifyStatement(statement);
 
-    if (!action) {
+    if (!action || action.role === "align") {
       continue;
     }
 

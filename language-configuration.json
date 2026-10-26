@@ -13,8 +13,8 @@
     ["(", ")"]
   ],
   "autoClosingPairs": [
+    { "open": "%%[", "close": "]%%" },
     { "open": "(", "close": ")" },
-    { "open": "[", "close": "]" },
     { "open": "{", "close": "}" },
     {
       "open": "\"",
@@ -36,11 +36,11 @@
   ],
   "indentationRules": {
     "increaseIndentPattern": {
-      "pattern": "^\\s*(?:%%\\[\\s*$|(?:%%\\[\\s*)?(?:IF\\b.*\\bTHEN|FOR\\b.*\\bDO)\\s*(?:\\]%%)?\\s*$)",
+      "pattern": "^\\s*(?:%%\\[\\s*$|(?:THEN|DO)\\s*$|(?:%%\\[\\s*)?(?:IF|ELSEIF|ELSE|FOR)\\b.*(?:\\]%%)?\\s*$)",
       "flags": "i"
     },
     "decreaseIndentPattern": {
-      "pattern": "^\\s*(?:\\]%%\\s*$|(?:%%\\[\\s*)?(?:ELSEIF\\b.*\\bTHEN|ELSE\\b|ENDIF\\b|NEXT\\b).*(?:\\]%%)?\\s*$)",
+      "pattern": "^\\s*(?:\\]%%\\s*$|(?:THEN|DO)\\s*$|(?:%%\\[\\s*)?(?:ELSEIF\\b|ELSE\\b|ENDIF\\b|NEXT\\b).*)",
       "flags": "i"
     }
   },
@@ -52,13 +52,13 @@
       }
     },
     {
-      "beforeText": "^\\s*(?:%%\\[\\s*)?(?:IF\\b.*\\bTHEN|FOR\\b.*\\bDO)\\s*(?:\\]%%)?\\s*$",
+      "beforeText": "^\\s*(?:%%\\[\\s*)?(?:IF\\b|FOR\\b).*$",
       "action": {
         "indent": "indent"
       }
     },
     {
-      "beforeText": "^\\s*(?:ELSEIF\\b.*\\bTHEN|ELSE)\\s*$",
+      "beforeText": "^\\s*(?:ELSEIF\\b.*|ELSE|THEN|DO)\\s*$",
       "action": {
         "indent": "indent"
       }

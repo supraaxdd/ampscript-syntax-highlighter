@@ -1,10 +1,15 @@
-
 {
   "name": "ampscript-highlighter",
   "displayName": "AMPscript Highlighter",
-  "description": "Basic syntax highlighting for Salesforce Marketing Cloud AMPscript.",
-  "version": "0.0.1",
-  "publisher": "your-publisher-id",
+  "description": "Editing tools for Salesforce Marketing Cloud AMPscript.",
+  "version": "0.2.1",
+  "publisher": "supraaxdd",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/supraaxdd/ampscript-syntax-highlighter.git"
+  },
+  "icon": "images/AMPHighlighter.png",
   "main": "./src/extension.js",
   "engines": {
     "vscode": "^1.85.0"
@@ -13,23 +18,36 @@
     "Programming Languages"
   ],
   "activationEvents": [
-    "onLanguage:ampscript"
+    "onLanguage:ampscript",
+    "onLanguage:html"
   ],
   "scripts": {
     "test": "node --test",
-    "generate:functions": "node scripts/generate-function-grammar.js"
+    "generate:functions": "node scripts/generate-function-grammar.js",
+    "version:patch": "npm version patch --no-git-tag-version",
+    "version:minor": "npm version minor --no-git-tag-version",
+    "version:prerelease": "npm version prerelease --preid=dev --no-git-tag-version"
   },
   "contributes": {
     "configurationDefaults": {
       "[ampscript]": {
+        "editor.formatOnType": true
+      },
+      "[html]": {
         "editor.formatOnType": true
       }
     },
     "languages": [
       {
         "id": "ampscript",
-        "aliases": ["AMPscript", "ampscript"],
-        "extensions": [".amp", ".ampscript"],
+        "aliases": [
+          "AMPscript",
+          "ampscript"
+        ],
+        "extensions": [
+          ".amp",
+          ".ampscript"
+        ],
         "configuration": "./language-configuration.json"
       }
     ],
@@ -49,8 +67,14 @@
         "scopeName": "html.ampscript.injection",
         "path": "./syntaxes/ampscript-html-injection.tmLanguage.json",
         "injectTo": [
-          "text.html.basic"
-        ]
+          "text.html.basic",
+          "text.html.derivative"
+        ],
+        "embeddedLanguages": {
+          "source.ampscript": "ampscript",
+          "meta.embedded.block.ampscript": "ampscript",
+          "meta.embedded.inline.ampscript": "ampscript"
+        }
       }
     ]
   }
