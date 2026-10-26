@@ -4,6 +4,19 @@ Editing tools for Salesforce Marketing Cloud AMPscript in VS Code.
 
 The extension highlights AMPscript, formats it as you type, and offers completion, hovers, signature help, diagnostics, folding, and an outline.
 
+## Install
+
+Download the `.vsix` from the [releases page](https://github.com/supraaxdd/ampscript-syntax-highlighter/releases). The file is named `ampscript-highlighter-<version>.vsix`.
+
+In VS Code:
+
+1. Open the Extensions view.
+2. Open the **Views and More Actions** (`...`) menu at the top of that view.
+3. Choose **Install from VSIX...**
+4. Select the downloaded file.
+
+Reload the window if the new version does not appear straight away.
+
 ## AMPscript files
 
 Open a `.amp` or `.ampscript` file. The language mode is AMPscript.
