@@ -16,6 +16,49 @@ function argumentLabel(argument) {
   return label;
 }
 
+function variableCompletion(name, atAlready) {
+  return {
+    label: `@${name}`,
+    filterText: name,
+    insertText: atAlready ? name : `@${name}`
+  };
+}
+
+/**
+ * The word range may include the @, or the @ may sit just before it.
+ * Either way the user has already typed the sigil.
+ */
+function variablePrefix(line, character, wordStart, wordText) {
+  if (wordText && wordText.startsWith("@")) {
+    return {
+      atAlready: true,
+      typed: wordText.slice(1),
+      dropAt: true
+    };
+  }
+
+  const before =
+    wordStart === null || wordStart === undefined
+      ? line[character - 1]
+      : wordStart > 0
+        ? line[wordStart - 1]
+        : "";
+
+  if (before === "@") {
+    return {
+      atAlready: true,
+      typed: wordText || "",
+      dropAt: false
+    };
+  }
+
+  return {
+    atAlready: false,
+    typed: wordText || "",
+    dropAt: false
+  };
+}
+
 function findFunction(name) {
   if (typeof name !== "string") {
     return null;
@@ -107,5 +150,7 @@ module.exports = {
   catalogue,
   findFunction,
   buildSignature,
-  callAtCursor
+  callAtCursor,
+  variableCompletion,
+  variablePrefix
 };

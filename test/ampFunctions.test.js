@@ -5,7 +5,9 @@ const {
   catalogue,
   findFunction,
   buildSignature,
-  callAtCursor
+  callAtCursor,
+  variableCompletion,
+  variablePrefix
 } = require("../src/ampFunctions");
 
 test("catalogue entries have a name, summary, arguments, and docs link", () => {
@@ -24,6 +26,35 @@ test("catalogue entries have a name, summary, arguments, and docs link", () => {
   assert.ok(findFunction("DecryptSymmetric"));
   assert.equal(findFunction("concat").name, "Concat");
   assert.equal(findFunction("IF"), null);
+});
+
+test("does not insert a second @ when the user already typed one", () => {
+  assert.deepEqual(variableCompletion("email", true), {
+    label: "@email",
+    filterText: "email",
+    insertText: "email"
+  });
+  assert.deepEqual(variableCompletion("email", false), {
+    label: "@email",
+    filterText: "email",
+    insertText: "@email"
+  });
+
+  assert.deepEqual(variablePrefix("SET @em", 7, 5, "@em"), {
+    atAlready: true,
+    typed: "em",
+    dropAt: true
+  });
+  assert.deepEqual(variablePrefix("SET @", 5, null, ""), {
+    atAlready: true,
+    typed: "",
+    dropAt: false
+  });
+  assert.deepEqual(variablePrefix("SET em", 6, 4, "em"), {
+    atAlready: false,
+    typed: "em",
+    dropAt: false
+  });
 });
 
 test("signature labels include every argument", () => {

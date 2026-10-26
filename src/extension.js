@@ -10,7 +10,9 @@ const {
   catalogue,
   findFunction,
   buildSignature,
-  callAtCursor
+  callAtCursor,
+  variableCompletion,
+  variablePrefix
 } = require("./ampFunctions");
 
 const KEYWORDS = [
@@ -177,27 +179,24 @@ const completionProvider = {
       return [];
     }
 
-    const range = document.getWordRangeAtPosition(position, WORD_PATTERN);
-    const typed = range ? document.getText(range) : "";
+    const word = document.getWordRangeAtPosition(position, WORD_PATTERN);
+    const line = document.lineAt(position.line).text;
+    const prefix = variablePrefix(
+      line,
+      position.character,
+      word ? word.start.character : null,
+      word ? document.getText(word) : ""
+    );
+    const range = completionRange(word, prefix.dropAt);
     const items = [];
 
-    if (typed.startsWith("@")) {
-      for (const name of collectDeclaredVariables(text)) {
-        items.push(
-          completionItem({
-            label: `@${name}`,
-            kind: vscode.CompletionItemKind.Variable,
-            detail: "AMPscript variable",
-            sortText: `0:${name}`,
-            range
-          })
-        );
-      }
-
-      return items;
+    if (prefix.atAlready) {
+      return variableItems(collectDeclaredVariables(text), {
+        atAlready: true,
+        range
+      });
     }
 
-    const line = document.lineAt(position.line).text;
     const rest = line.slice(position.character);
     const hasCall = /^\s*\(/.test(rest);
 
@@ -235,21 +234,50 @@ const completionProvider = {
       items.push(item);
     }
 
-    for (const name of collectDeclaredVariables(text)) {
-      items.push(
-        completionItem({
-          label: `@${name}`,
-          kind: vscode.CompletionItemKind.Variable,
-          detail: "AMPscript variable",
-          sortText: `0:${name}`,
-          range
-        })
-      );
-    }
+    items.push(
+      ...variableItems(collectDeclaredVariables(text), {
+        atAlready: false,
+        range
+      })
+    );
 
     return items;
   }
 };
+
+function completionRange(word, dropAt) {
+  if (!word) {
+    return undefined;
+  }
+
+  if (!dropAt) {
+    return word;
+  }
+
+  return new vscode.Range(
+    word.start.line,
+    word.start.character + 1,
+    word.end.line,
+    word.end.character
+  );
+}
+
+function variableItems(names, { atAlready, range }) {
+  return names.map((name) => {
+    const text = variableCompletion(name, atAlready);
+    const item = completionItem({
+      label: text.label,
+      kind: vscode.CompletionItemKind.Variable,
+      detail: "AMPscript variable",
+      sortText: `0:${name}`,
+      range
+    });
+
+    item.filterText = text.filterText;
+    item.insertText = text.insertText;
+    return item;
+  });
+}
 
 function completionItem({ label, kind, detail, sortText, range }) {
   const item = new vscode.CompletionItem(label, kind);
