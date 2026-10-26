@@ -2,7 +2,7 @@
   "name": "ampscript-highlighter",
   "displayName": "AMPscript Highlighter",
   "description": "Editing tools for Salesforce Marketing Cloud AMPscript.",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "publisher": "your-publisher-id",
   "main": "./src/extension.js",
   "engines": {
@@ -12,7 +12,8 @@
     "Programming Languages"
   ],
   "activationEvents": [
-    "onLanguage:ampscript"
+    "onLanguage:ampscript",
+    "onLanguage:html"
   ],
   "scripts": {
     "test": "node --test",
@@ -24,6 +25,9 @@
   "contributes": {
     "configurationDefaults": {
       "[ampscript]": {
+        "editor.formatOnType": true
+      },
+      "[html]": {
         "editor.formatOnType": true
       }
     },
@@ -57,8 +61,14 @@
         "scopeName": "html.ampscript.injection",
         "path": "./syntaxes/ampscript-html-injection.tmLanguage.json",
         "injectTo": [
-          "text.html.basic"
-        ]
+          "text.html.basic",
+          "text.html.derivative"
+        ],
+        "embeddedLanguages": {
+          "source.ampscript": "ampscript",
+          "meta.embedded.block.ampscript": "ampscript",
+          "meta.embedded.inline.ampscript": "ampscript"
+        }
       }
     ]
   }

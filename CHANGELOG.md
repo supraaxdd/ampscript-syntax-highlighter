@@ -4,6 +4,14 @@ Versions follow semver and live in `package.json`. That number is what a VS Code
 
 Bump it with `npm run version:patch` for a fix, `npm run version:minor` for a feature, or `npm run version:prerelease` for a development build. A development build keeps the numbers and adds a `-dev` tag, for example `0.1.1-dev.0`. A deployment build has no tag. These commands update `package.json` only; they do not create a git commit.
 
+## 0.2.0
+
+### Added
+
+- Completion, hover, signature help, diagnostics, outline, and folding now run inside `%%[ ]%%` and `%%= =%%` in HTML files. Format-on-type adjusts AMPscript lines inside a block and leaves the HTML formatter alone.
+- AMPscript highlighting and auto-indent apply inside those HTML regions. Pressing Enter indents the next line, and `ENDIF`, `NEXT`, `ELSE`, and `]%%` line up with the block they close.
+- The extension activates when an HTML file is opened.
+
 ## 0.1.1
 
 ### Fixed

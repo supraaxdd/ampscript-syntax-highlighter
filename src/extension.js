@@ -1,11 +1,23 @@
 const vscode = require("vscode");
-const { formatAmpScriptText } = require("./ampFormatting");
+const { formatAmpScriptText, indentForLine } = require("./ampFormatting");
 const {
   scanAmpScript,
   collectFoldingRanges,
   collectDeclaredVariables,
   isInsideCommentOrString
 } = require("./ampStructure");
+const {
+  findEmbeddedRegions,
+  regionAt,
+  relativePosition,
+  sliceOf,
+  embeddedProblems,
+  embeddedBlocks,
+  embeddedFolds,
+  desiredIndent,
+  declaredSource,
+  positionToOffset
+} = require("./ampEmbedded");
 const {
   catalogue,
   findFunction,
@@ -41,11 +53,13 @@ const KEYWORDS = [
 const WORD_PATTERN = /@?[A-Za-z_][A-Za-z0-9_]*|-?\d+(?:\.\d+)?/;
 
 function activate(context) {
-  const selector = { language: "ampscript" };
+  const ampscriptSelector = { language: "ampscript" };
+  const htmlSelector = { language: "html" };
+  const both = [ampscriptSelector, htmlSelector];
   const diagnostics = vscode.languages.createDiagnosticCollection("ampscript");
 
   const refreshDiagnostics = (document) => {
-    if (document.languageId !== "ampscript") {
+    if (!isSupported(document)) {
       return;
     }
 
@@ -62,7 +76,7 @@ function activate(context) {
       diagnostics.delete(document.uri);
     }),
     vscode.languages.registerOnTypeFormattingEditProvider(
-      selector,
+      both,
       onTypeProvider,
       "F",
       "f",
@@ -70,29 +84,32 @@ function activate(context) {
       "e",
       "T",
       "t",
-      " "
+      " ",
+      "\n",
+      "%",
+      "N",
+      "n",
+      "O",
+      "o"
     ),
     vscode.languages.registerDocumentFormattingEditProvider(
-      selector,
+      ampscriptSelector,
       documentFormatter
     ),
     vscode.languages.registerCompletionItemProvider(
-      selector,
+      both,
       completionProvider,
       "@"
     ),
-    vscode.languages.registerHoverProvider(selector, hoverProvider),
+    vscode.languages.registerHoverProvider(both, hoverProvider),
     vscode.languages.registerSignatureHelpProvider(
-      selector,
+      both,
       signatureProvider,
       "(",
       ","
     ),
-    vscode.languages.registerDocumentSymbolProvider(
-      selector,
-      symbolProvider
-    ),
-    vscode.languages.registerFoldingRangeProvider(selector, foldingProvider)
+    vscode.languages.registerDocumentSymbolProvider(both, symbolProvider),
+    vscode.languages.registerFoldingRangeProvider(both, foldingProvider)
   );
 
   for (const document of vscode.workspace.textDocuments) {
@@ -100,33 +117,74 @@ function activate(context) {
   }
 }
 
+function isSupported(document) {
+  return (
+    document.languageId === "ampscript" || document.languageId === "html"
+  );
+}
+
+function htmlRegion(document, position) {
+  if (document.languageId !== "html") {
+    return { embedded: false, region: null, text: document.getText() };
+  }
+
+  const text = document.getText();
+  const regions = findEmbeddedRegions(text);
+
+  return {
+    embedded: true,
+    text,
+    regions,
+    region: regionAt(regions, position.line, position.character, text)
+  };
+}
+
 const onTypeProvider = {
   provideOnTypeFormattingEdits(document, position, ch, options) {
-    if (document.languageId !== "ampscript") {
+    if (!isSupported(document)) {
       return [];
     }
 
-    // Only format after a space, when a statement or keyword is more likely
-    // to be complete. Avoid reformatting while the user types individual letters.
-    if (ch !== " ") return [];
-
     const text = document.getText();
-    const formatted = formatAmpScriptText(
-      text,
-      options.tabSize,
-      options.insertSpaces
-    );
+    let desired = null;
 
-    const formattedLines = formatted.split(/\r?\n/);
+    if (document.languageId === "html") {
+      desired = desiredIndent(
+        text,
+        position.line,
+        position.character,
+        options.tabSize,
+        options.insertSpaces
+      );
+    } else if (ch === "\n") {
+      desired = indentForLine(
+        text,
+        position.line,
+        options.tabSize,
+        options.insertSpaces
+      );
+    } else {
+      const formatted = formatAmpScriptText(
+        text,
+        options.tabSize,
+        options.insertSpaces
+      );
+      const formattedLines = formatted.split(/\r?\n/);
+      desired = (
+        (formattedLines[position.line] || "").match(/^[ \t]*/) || [""]
+      )[0];
+    }
+
+    if (desired === null) {
+      return [];
+    }
+
     const currentLine = document.lineAt(position.line);
-    const desiredIndent = (
-      formattedLines[position.line].match(/^[ \t]*/) || [""]
-    )[0];
     const currentIndent = (
       currentLine.text.match(/^[ \t]*/) || [""]
     )[0];
 
-    if (desiredIndent === currentIndent) {
+    if (desired === currentIndent) {
       return [];
     }
 
@@ -138,7 +196,7 @@ const onTypeProvider = {
           position.line,
           currentIndent.length
         ),
-        desiredIndent
+        desired
       )
     ];
   }
@@ -171,14 +229,36 @@ const documentFormatter = {
 
 const completionProvider = {
   provideCompletionItems(document, position) {
-    const text = document.getText();
-
-    if (
-      isInsideCommentOrString(text, position.line, position.character)
-    ) {
+    if (!isSupported(document)) {
       return [];
     }
 
+    const fullText = document.getText();
+    const located = htmlRegion(document, position);
+
+    if (located.embedded && !located.region) {
+      return [];
+    }
+
+    const source = located.embedded
+      ? sliceOf(fullText, located.region)
+      : fullText;
+    const relative = located.embedded
+      ? relativePosition(
+          fullText,
+          located.region,
+          position.line,
+          position.character
+        )
+      : { line: position.line, character: position.character };
+
+    if (isInsideCommentOrString(source, relative.line, relative.character)) {
+      return [];
+    }
+
+    const names = collectDeclaredVariables(
+      located.embedded ? declaredSource(fullText) : fullText
+    );
     const word = document.getWordRangeAtPosition(position, WORD_PATTERN);
     const line = document.lineAt(position.line).text;
     const prefix = variablePrefix(
@@ -188,10 +268,9 @@ const completionProvider = {
       word ? document.getText(word) : ""
     );
     const range = completionRange(word, prefix.dropAt);
-    const items = [];
 
     if (prefix.atAlready) {
-      return variableItems(collectDeclaredVariables(text), {
+      return variableItems(names, {
         atAlready: true,
         range
       });
@@ -199,6 +278,7 @@ const completionProvider = {
 
     const rest = line.slice(position.character);
     const hasCall = /^\s*\(/.test(rest);
+    const items = [];
 
     for (const keyword of KEYWORDS) {
       const kind =
@@ -235,7 +315,7 @@ const completionProvider = {
     }
 
     items.push(
-      ...variableItems(collectDeclaredVariables(text), {
+      ...variableItems(names, {
         atAlready: false,
         range
       })
@@ -306,12 +386,29 @@ function functionDocumentation(entry) {
 
 const hoverProvider = {
   provideHover(document, position) {
+    if (!isSupported(document)) {
+      return null;
+    }
+
+    const located = htmlRegion(document, position);
+
+    if (located.embedded && !located.region) {
+      return null;
+    }
+
     const range = document.getWordRangeAtPosition(
       position,
       /[A-Za-z_][A-Za-z0-9_]*/
     );
 
     if (!range) {
+      return null;
+    }
+
+    if (
+      located.embedded &&
+      !wordInsideRegion(document.getText(), located.region, range)
+    ) {
       return null;
     }
 
@@ -325,13 +422,42 @@ const hoverProvider = {
   }
 };
 
+function wordInsideRegion(text, region, range) {
+  const start = positionToOffset(text, range.start.line, range.start.character);
+  const end = positionToOffset(text, range.end.line, range.end.character);
+
+  return start >= region.startOffset && end <= region.endOffset;
+}
+
 const signatureProvider = {
   provideSignatureHelp(document, position) {
-    const context = callAtCursor(
-      document.getText(),
-      position.line,
-      position.character
-    );
+    if (!isSupported(document)) {
+      return null;
+    }
+
+    const fullText = document.getText();
+    const located = htmlRegion(document, position);
+    let source = fullText;
+    let line = position.line;
+    let character = position.character;
+
+    if (located.embedded) {
+      if (!located.region) {
+        return null;
+      }
+
+      source = sliceOf(fullText, located.region);
+      const relative = relativePosition(
+        fullText,
+        located.region,
+        position.line,
+        position.character
+      );
+      line = relative.line;
+      character = relative.character;
+    }
+
+    const context = callAtCursor(source, line, character);
 
     if (!context) {
       return null;
@@ -365,6 +491,24 @@ const signatureProvider = {
 };
 
 function diagnosticsFor(document) {
+  if (document.languageId === "html") {
+    return embeddedProblems(document.getText()).map((problem) => {
+      const diagnostic = new vscode.Diagnostic(
+        new vscode.Range(
+          problem.line,
+          problem.startCharacter,
+          problem.line,
+          problem.endCharacter
+        ),
+        problem.message,
+        vscode.DiagnosticSeverity.Error
+      );
+
+      diagnostic.source = "ampscript";
+      return diagnostic;
+    });
+  }
+
   const { problems } = scanAmpScript(document.getText());
 
   return problems.map((problem) => {
@@ -383,7 +527,11 @@ function diagnosticsFor(document) {
 
 const symbolProvider = {
   provideDocumentSymbols(document) {
-    const { blocks } = scanAmpScript(document.getText());
+    const blocks =
+      document.languageId === "html"
+        ? embeddedBlocks(document.getText())
+        : scanAmpScript(document.getText()).blocks;
+
     return toSymbols(blocks, document, null);
   }
 };
@@ -458,8 +606,13 @@ function symbolKind(type) {
 
 const foldingProvider = {
   provideFoldingRanges(document) {
-    const { blocks } = scanAmpScript(document.getText());
-    const ranges = collectFoldingRanges(blocks, document.lineCount);
+    const ranges =
+      document.languageId === "html"
+        ? embeddedFolds(document.getText())
+        : collectFoldingRanges(
+            scanAmpScript(document.getText()).blocks,
+            document.lineCount
+          );
 
     return ranges.map(
       (range) =>

@@ -1,7 +1,7 @@
 
 {
   "scopeName": "html.ampscript.injection",
-  "injectionSelector": "L:text.html.basic",
+  "injectionSelector": "L:text.html.derivative -comment.block.html, L:text.html.basic -comment.block.html",
   "patterns": [
     {
       "name": "meta.embedded.block.ampscript",
@@ -17,6 +17,7 @@
           "name": "punctuation.definition.block.end.ampscript"
         }
       },
+      "contentName": "source.ampscript",
       "patterns": [
         {
           "include": "source.ampscript#amp-token-patterns"
@@ -37,6 +38,7 @@
           "name": "punctuation.definition.inline.end.ampscript"
         }
       },
+      "contentName": "source.ampscript",
       "patterns": [
         {
           "include": "source.ampscript#amp-token-patterns"
