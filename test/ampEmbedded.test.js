@@ -116,6 +116,54 @@ test("indents an open block without reformatting the HTML after it", () => {
   assert.equal(desiredIndent(text, 3, 1), null);
 });
 
+test("matches IF, ELSE, and ENDIF across separate AMPscript blocks", () => {
+  const text = [
+    '<div class="email-container">',
+    "<h1>Hello, %%=v(@firstName)=%%</h1>",
+    "%%[ IF @orderTotal >= 200 THEN ]%%",
+    "<p>You qualify for a special offer.</p>",
+    "%%[ ELSE ]%%",
+    "<p>Explore our latest offers.</p>",
+    "%%[ ENDIF ]%%",
+    "</div>"
+  ].join("\n");
+
+  assert.deepEqual(embeddedProblems(text), []);
+
+  const conditional = embeddedBlocks(text).find((block) => block.type === "IF");
+  assert.equal(conditional.openLine, 2);
+  assert.equal(conditional.closeLine, 6);
+  assert.deepEqual(
+    embeddedFolds(text).find((fold) => fold.start === 2),
+    { start: 2, end: 6 }
+  );
+});
+
+test("matches an IF that opens and closes in different multi-line blocks", () => {
+  const text = [
+    "%%[",
+    "IF @a == 1 THEN",
+    "]%%",
+    "<p>Hi</p>",
+    "%%[",
+    "ENDIF",
+    "]%%"
+  ].join("\n");
+
+  assert.deepEqual(embeddedProblems(text), []);
+});
+
+test("still reports an IF that never reaches ENDIF", () => {
+  const text = [
+    "%%[ IF @a == 1 THEN ]%%",
+    "<p>Hi</p>",
+    "%%[ ELSE ]%%"
+  ].join("\n");
+  const messages = embeddedProblems(text).map((problem) => problem.message);
+
+  assert.deepEqual(messages, ["Unclosed IF block."]);
+});
+
 test("injects AMPscript highlighting into the HTML grammar VS Code actually uses", () => {
   const manifest = require("../package.json");
   const grammar = require("../syntaxes/ampscript-html-injection.tmLanguage.json");

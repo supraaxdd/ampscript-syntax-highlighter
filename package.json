@@ -2,7 +2,7 @@
   "name": "ampscript-highlighter",
   "displayName": "AMPscript Highlighter",
   "description": "Editing tools for Salesforce Marketing Cloud AMPscript.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "publisher": "your-publisher-id",
   "main": "./src/extension.js",
   "engines": {

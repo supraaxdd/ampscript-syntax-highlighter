@@ -4,6 +4,12 @@ Versions follow semver and live in `package.json`. That number is what a VS Code
 
 Bump it with `npm run version:patch` for a fix, `npm run version:minor` for a feature, or `npm run version:prerelease` for a development build. A development build keeps the numbers and adds a `-dev` tag, for example `0.1.1-dev.0`. A deployment build has no tag. These commands update `package.json` only; they do not create a git commit.
 
+## 0.2.1
+
+### Fixed
+
+- An `IF` / `ELSE` / `ENDIF` or `FOR` / `NEXT` split across several `%%[ ]%%` blocks in HTML is one block. The HTML between those blocks is left alone, and a block that never closes is still reported.
+
 ## 0.2.0
 
 ### Added
