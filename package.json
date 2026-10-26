@@ -3,7 +3,13 @@
   "displayName": "AMPscript Highlighter",
   "description": "Editing tools for Salesforce Marketing Cloud AMPscript.",
   "version": "0.2.1",
-  "publisher": "your-publisher-id",
+  "publisher": "supraaxdd",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/supraaxdd/ampscript-syntax-highlighter.git"
+  },
+  "icon": "images/AMPHighlighter.png",
   "main": "./src/extension.js",
   "engines": {
     "vscode": "^1.85.0"
